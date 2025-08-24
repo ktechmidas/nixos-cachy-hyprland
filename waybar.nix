@@ -139,14 +139,12 @@ in
             };
             
             "custom/pacman" = {
-              format = "<big>󰮯  </big>  {}";
+              format = "󰮯  {}";
               interval = 3600;
-              exec = "checkupdates 2>/dev/null | wc -l || echo 0";
+              exec = "bash /home/monotoko/code/nix/number.sh || echo 0";
               exec-if = "exit 0";
               on-click = "alacritty -e 'paru'; pkill -SIGRTMIN+8 waybar";
               signal = 8;
-              max-length = 5;
-              min-length = 3;
             };
             
             "custom/spotify" = {

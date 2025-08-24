@@ -76,11 +76,13 @@ in
       brightnessctl
       playerctl
       pavucontrol
+      pulseaudio  # Provides pactl for volume control
       alacritty
       waybar
       mako
       networkmanagerapplet
       wob
+      alsa-utils
       kdePackages.polkit-kde-agent-1
       swaybg
       hyprpaper

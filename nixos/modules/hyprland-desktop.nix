@@ -14,13 +14,17 @@ in
     ./swaylock.nix
     ./mako.nix
     ./hyprpaper.nix
-    ./gtk-theme.nix
-    ./terminal.nix
   ];
 
   options.modules.hyprland-desktop = {
     enable = mkEnableOption "Complete Hyprland desktop environment";
-    
+
+    user = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "User account that should receive the Hyprland desktop Home Manager configuration.";
+    };
+
     terminal = mkOption {
       type = types.str;
       default = "alacritty";
@@ -35,7 +39,7 @@ in
     
     wallpaper = mkOption {
       type = types.str;
-      default = "/usr/share/wallpapers/cachyos-wallpapers/Skyscraper.png";
+      default = "/usr/share/wallpapers/cachyos-wallpapers/skyscraper.png";
       description = "Path to wallpaper image";
     };
     
@@ -47,6 +51,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.user != null;
+        message = "modules.hyprland-desktop.enable requires modules.hyprland-desktop.user to be set.";
+      }
+    ];
+
     # Enable all Hyprland desktop components
     modules.hyprland = {
       enable = true;
@@ -55,23 +66,45 @@ in
       appLauncher = "wofi";
       wallpaper = cfg.wallpaper;
       cursorSize = cfg.cursorSize;
+      user = cfg.user;
     };
     
-    modules.waybar.enable = true;
-    modules.wofi.enable = true;
-    modules.wlogout.enable = true;
-    modules.swaylock.enable = true;
-    modules.mako.enable = true;
+    modules.waybar = {
+      enable = true;
+      user = cfg.user;
+    };
+
+    modules.wofi = {
+      enable = true;
+      user = cfg.user;
+    };
+
+    modules.wlogout = {
+      enable = true;
+      user = cfg.user;
+    };
+
+    modules.swaylock = {
+      enable = true;
+      user = cfg.user;
+    };
+
+    modules.mako = {
+      enable = true;
+      user = cfg.user;
+    };
+
     modules.hyprpaper = {
       enable = true;
-      wallpaper = "/home/monotoko/Pictures/Media/wallpaper.jpg";
+      wallpaper = cfg.wallpaper;
+      user = cfg.user;
     };
     
     # Enable GTK theming with Nordic/CachyOS-Nord
-    modules.gtk-theme.enable = true;
+    #modules.gtk-theme.enable = true;
     
     # Enable enhanced terminal with zsh and starship
-    modules.terminal.enable = true;
+    #modules.terminal.enable = true;
     
     # Additional system packages that might be useful
     environment.systemPackages = with pkgs; [

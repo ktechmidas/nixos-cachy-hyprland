@@ -8,9 +8,22 @@ in
 {
   options.modules.waybar = {
     enable = mkEnableOption "Waybar status bar";
+
+    user = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "User account that should receive the Waybar Home Manager configuration.";
+    };
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.user != null;
+        message = "modules.waybar.enable requires modules.waybar.user to be set.";
+      }
+    ];
+
     environment.systemPackages = with pkgs; [
       waybar
       pavucontrol
@@ -19,11 +32,12 @@ in
       networkmanagerapplet
     ];
 
-    home-manager.users.monotoko = { pkgs, ... }: {
-      programs.waybar = {
-        enable = true;
-        
-        settings = {
+    home-manager.users = mkIf (cfg.user != null) {
+      "${cfg.user}" = { pkgs, ... }: {
+        programs.waybar = {
+          enable = true;
+
+          settings = {
           mainBar = {
             layer = "top";
             position = "top";

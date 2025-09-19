@@ -8,7 +8,13 @@ in
 {
   options.modules.hyprland = {
     enable = mkEnableOption "Hyprland window manager configuration";
-    
+
+    user = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "User account that should receive the Hyprland Home Manager configuration.";
+    };
+
     terminal = mkOption {
       type = types.str;
       default = "alacritty";
@@ -47,6 +53,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.user != null;
+        message = "modules.hyprland.enable requires modules.hyprland.user to be set.";
+      }
+    ];
+
     # Enable Hyprland at the system level
     programs.hyprland.enable = true;
     
@@ -89,19 +102,20 @@ in
     ];
     
     # Home-manager configuration for the user
-    home-manager.users.monotoko = { pkgs, ... }: {
-      # Set cursor theme environment variables for the user session
-      home.sessionVariables = {
-        HYPRCURSOR_SIZE = toString cfg.cursorSize;
-        HYPRCURSOR_THEME = cfg.cursorTheme;
-        XCURSOR_SIZE = toString cfg.cursorSize;
-        XCURSOR_THEME = cfg.cursorTheme;
-      };
-      
-      wayland.windowManager.hyprland = {
-        enable = true;
-        
-        extraConfig = ''
+    home-manager.users = mkIf (cfg.user != null) {
+      "${cfg.user}" = { pkgs, ... }: {
+        # Set cursor theme environment variables for the user session
+        home.sessionVariables = {
+          HYPRCURSOR_SIZE = toString cfg.cursorSize;
+          HYPRCURSOR_THEME = cfg.cursorTheme;
+          XCURSOR_SIZE = toString cfg.cursorSize;
+          XCURSOR_THEME = cfg.cursorTheme;
+        };
+
+        wayland.windowManager.hyprland = {
+          enable = true;
+
+          extraConfig = ''
           # Resize submap configuration
           submap = resize
           bind = , right, resizeactive, 15 0

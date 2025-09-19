@@ -8,18 +8,32 @@ in
 {
   options.modules.wlogout = {
     enable = mkEnableOption "Wlogout logout menu";
+
+    user = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "User account that should receive the Wlogout Home Manager configuration.";
+    };
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.user != null;
+        message = "modules.wlogout.enable requires modules.wlogout.user to be set.";
+      }
+    ];
+
     environment.systemPackages = with pkgs; [
       wlogout
     ];
 
-    home-manager.users.monotoko = { pkgs, ... }: {
-      programs.wlogout = {
-        enable = true;
-        
-        layout = [
+    home-manager.users = mkIf (cfg.user != null) {
+      "${cfg.user}" = { pkgs, ... }: {
+        programs.wlogout = {
+          enable = true;
+
+          layout = [
           {
             label = "lock";
             action = "swaylock";
@@ -58,7 +72,7 @@ in
           }
         ];
         
-        style = ''
+          style = ''
           * {
               background-image: none;
               box-shadow: none;
@@ -110,7 +124,7 @@ in
               background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/reboot.png"));
           }
         '';
+        };
       };
     };
-  };
 }

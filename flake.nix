@@ -30,7 +30,7 @@
         default = { ... }: {
           imports = [
             home-manager.nixosModules.home-manager
-            (import ./nixos/modules/hyprland-desktop.nix)
+            hyprland-desktop
           ];
         };
       };

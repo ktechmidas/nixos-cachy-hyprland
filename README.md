@@ -57,7 +57,8 @@ The original CachyOS Hyprland setup, ported to reusable NixOS + Home Manager mod
 
 4. Don't forget to see variables in your local configuration.nix
 
-```modules.hyprland-desktop = {
+```nix
+modules.hyprland-desktop = {
     enable = true;
     user = "monotoko";
     wallpaper = "/home/monotoko/Downloads/skyscraper.png";

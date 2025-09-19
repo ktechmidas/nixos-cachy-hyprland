@@ -55,6 +55,14 @@ The original CachyOS Hyprland setup, ported to reusable NixOS + Home Manager mod
    }
    ```
 
+4. Don't forget to see variables in your local configuration.nix
+
+```  modules.hyprland-desktop = {
+    enable = true;
+    user = "monotoko";
+    wallpaper = "/home/monotoko/Downloads/skyscraper.png";
+  };```
+
 Each module exposes a `user` option so the Home Manager configuration can be attached to the right account. Set the other options (`terminal`, `fileManager`, `wallpaper`, `cursorSize`, etc.) as needed.
 
 Run `nix flake lock --update-input hyprland-config` after adding the dependency to pin it in your project.

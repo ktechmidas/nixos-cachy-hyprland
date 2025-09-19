@@ -7,7 +7,7 @@ The original CachyOS Hyprland setup, ported to reusable NixOS + Home Manager mod
 1. Add the flake as an input:
 
    ```nix
-   inputs.hyprland-config.url = "github:monotoko/nixos-cachy-hyprland";
+   inputs.hyprland-config.url = "github:ktechmidas/nixos-cachy-hyprland";
    inputs.hyprland-config.inputs.nixpkgs.follows = "nixpkgs";
    ```
 
